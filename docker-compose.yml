@@ -8,8 +8,8 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
-    environment:
-      - DATABASE_URL=postgresql://deepblue_user:deepblue_pass@db:5432/deepblue_db
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy
