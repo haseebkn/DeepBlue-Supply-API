@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: deepblue_web
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgresql://deepblue_user:deepblue_pass@db:5432/deepblue_db
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    networks:
+      - deepblue_network
+
+  db:
+    image: postgres:15-alpine
+    container_name: deepblue_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=deepblue_user
+      - POSTGRES_PASSWORD=deepblue_pass
+      - POSTGRES_DB=deepblue_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U deepblue_user -d deepblue_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - deepblue_network
+
+networks:
+  deepblue_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
