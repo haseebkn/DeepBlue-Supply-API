@@ -5,7 +5,7 @@ services:
     build: .
     container_name: deepblue_web
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       - .:/app
     env_file:

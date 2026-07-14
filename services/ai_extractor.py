@@ -22,7 +22,7 @@ class AIExtractorService:
     def __init__(self):
         # Configurable endpoint. Defaults to internal mock service but supports Bedrock/GLM configurations
         self.api_url = os.getenv("LLM_SERVICE_URL", "https://api.deepblue-ai.internal/v1/chat/completions")
-        self.api_key = os.getenv("LLM_API_KEY", "dummy-key-for-scaffolding")
+        self.api_key = os.getenv("OPENAI_API_KEY", "dummy-key-for-scaffolding")
 
     async def extract(self, field_notes: str) -> ExtractedMaintenanceData:
         """
@@ -47,7 +47,7 @@ class AIExtractorService:
                             "Content-Type": "application/json"
                         },
                         json={
-                            "model": "deepblue-extractor-v1",
+                            "model": "gpt-4o",
                             "messages": [
                                 {"role": "system", "content": system_prompt},
                                 {"role": "user", "content": field_notes}
