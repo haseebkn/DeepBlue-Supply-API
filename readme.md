@@ -62,19 +62,37 @@ DATABASE_URL=postgresql://deepblue_user:deepblue_pass@db:5432/deepblue_db
 
 # AI Service Settings
 OPENAI_API_KEY=your-api-key-here
-# or
-ANTHROPIC_API_KEY=your-api-key-here
+LLM_SERVICE_URL=https://api.openai.com/v1/chat/completions
 ```
 
 ### Building and Running the Application
-Spin up the service stack (app + database) with a single command:
+
+#### Option A: Running via Docker Compose (Recommended)
+Spin up the service stack (app + database) with:
 ```bash
 docker compose up --build
 ```
-This will:
+This will automatically:
 1. Build the FastAPI Docker image.
 2. Pull and start a PostgreSQL container.
-3. Apply DB configurations and expose the web app at `http://localhost:8000`.
+3. Apply database migrations and expose the app at `http://localhost:8001`.
+   * **Visual Dashboard:** `http://localhost:8001/dashboard`
+   * **API Docs (Swagger):** `http://localhost:8001/docs`
+
+#### Option B: Running Locally (Standalone)
+To run the server directly on your host machine:
+1. Initialize virtual environment and install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Start the local server:
+   ```bash
+   uvicorn main:app --reload --port 8000
+   ```
+   *(Note: Ensure you have a running PostgreSQL instance matching your `DATABASE_URL` in `.env`.)*
+   This exposes:
+   * **Visual Dashboard:** `http://localhost:8000/dashboard`
+   * **API Docs (Swagger):** `http://localhost:8000/docs`
 
 ---
 
@@ -129,6 +147,10 @@ A post-endpoint designed to take unstructured text fields from field technicians
           }
         }
         ```
+
+### 3.5. Visual Dashboard (`/dashboard`)
+A premium, interactive web interface served directly from the FastAPI backend. It allows technicians to submit field notes, track extraction task status in real time, and view tracked assets, inventory stock counts, and maintenance logs.
+*   `GET /dashboard` - Opens the visual single-page application.
 
 ---
 
